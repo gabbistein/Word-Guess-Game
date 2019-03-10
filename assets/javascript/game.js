@@ -33,16 +33,8 @@ var playerWordBuilder = [];
 // This is what I'm using to build my blank word to guess.
 var underscore = " __ ";
 
-// This figures out how many guesses (out of 15) you have left.
-// var updatedGuessesRemaining = function(event) {
-   
-// }
 
-// // This updates your remainingGuesses to reflect how many times you've pressed a key.
-// var something = 
-
-
-// This makes your game initialize to the press of any key.
+// THE ENTIRETY OF YOUR GAME GOES HERE:
 document.onkeyup = function(event) {
     var wordChoices = words[Math.floor(Math.random() * words.length)];
     console.log(wordChoices);
@@ -50,12 +42,15 @@ document.onkeyup = function(event) {
     console.log(wordLength);
     var blankWord = (underscore.repeat(wordLength));
     document.getElementById("yourWord").innerHTML = blankWord;
+
+
 }
 
 
 
-// // This is how the variable "lettesGuessed" is filled by your keystrokes.
 
+// How many guesses (out of 15) do you have left?
 
+// Update your remainingGuesses to reflect how many times you've pressed a key.
 
-// // This is how the game knows you've won or lost.
+// Make a confirm when you win or lose (game is over) to get back to the initial screen without the blank letter slots.
