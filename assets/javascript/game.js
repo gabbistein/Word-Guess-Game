@@ -15,9 +15,6 @@ var words = [
     "civilization",
    ];
 
-// This is the random word from the "words" array for your game.
-// var wordChoices = words[Math.floor(Math.random() * words.length)];
-
 // You get 15 tries/guesses each game.
 var totalGuesses = 15;
 
