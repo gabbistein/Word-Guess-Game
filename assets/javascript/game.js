@@ -59,7 +59,7 @@ function resetGame() {
     // console.log(wordLength);
     // var blankWord = (underscore.repeat(wordLength));
 
-    for (let i = 0; i < wordChoices.length; i++) {
+for (let i = 0; i < wordChoices.length; i++) {
         correctGuesses[i] = underscore;        
     }
     console.log(correctGuesses);
@@ -93,7 +93,8 @@ document.onkeyup = function(event) {
             console.log(urWord);           
         }
     }
-    };
+
+};
 
 // initialize();
 
@@ -114,4 +115,3 @@ document.onkeyup = function(event) {
 // When you get the word guessed correctly (you've replaced the underscores correctly to uncover the letters "underneath") you win!
 
 // When you win or lose, get a confirm to "Play again?"
-
