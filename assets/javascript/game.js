@@ -39,8 +39,6 @@ var wins = 0;
 function resetGame() {
     remainingGuesses = totalGuesses;
     gameStarted = false;
-    lettersGuessed = [];
-    goalWord = [];
     updateDisplay();
 }
 
@@ -115,16 +113,18 @@ function updateDisplay() {
         }
 
         // You win when all underscores are gone from goalWord.
-
-
+        console.log(goalWord.includes(underscore));
+        if (goalWord.includes(underscore) === false) {
+            alert("You win! Play again?");
+            resetGame();
+        }
 
         // You lose when totalGuesses = 0.
-
-
-
+        if (urGuesses === 0 && goalWord.includes(underscore) === true) {
+            alert("You lose! Play again?");
+            resetGame();
+        }
     };
 };
 
 resetGame();
-
-// initialize();
