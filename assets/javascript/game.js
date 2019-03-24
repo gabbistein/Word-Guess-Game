@@ -13,19 +13,13 @@ var words = [
     "wildlife",
     "organism",
     "civilization",
-   ];
+];
 
 // You get 20 tries/guesses each game.
 var totalGuesses = 20;
 
-// This stores how many guesses you have made.
-var remainingGuesses = [];
-
-// This array will store the letters you've guessed this turn.
-var lettersGuessed = [];
-
-// This will store all the letters you guess that correspond correctly with your word.
-var correctGuesses = [];
+// These are all ur bad guesses.
+var wrongLetters = [];
 
 // This is what I'm using to build my blank word to guess.
 var underscore = " _ ";
@@ -39,10 +33,6 @@ var gameFinished = false;
 // This is how many times you've won.
 var wins = 0;
 
-// This chooses your random word.
-var wordChoices = words[Math.floor(Math.random() * words.length)].split("");
-console.log(wordChoices);
-
 
 // YOUR GAME GOES HERE:
 
@@ -50,68 +40,91 @@ function resetGame() {
     remainingGuesses = totalGuesses;
     gameStarted = false;
     lettersGuessed = [];
-    correctGuesses = [];
-    updateDisplay(); 
+    goalWord = [];
+    updateDisplay();
 }
 
-// function initialize() {
-    // var wordLength = wordChoices.length;
-    // console.log(wordLength);
-    // var blankWord = (underscore.repeat(wordLength));
+function updateDisplay() {
 
-for (let i = 0; i < wordChoices.length; i++) {
-        correctGuesses[i] = underscore;        
+    // This stores how many guesses you have made.
+    var remainingGuesses = [];
+
+    // This array will store the letters you've guessed this turn.
+    var lettersGuessed = [];
+
+    // This will store all the letters you guess that correspond with your word, aka your correct word.
+    var goalWord = [];
+
+    var wordChoices = words[Math.floor(Math.random() * words.length)].split("");
+
+    for (let i = 0; i < wordChoices.length; i++) {
+        goalWord[i] = underscore;
     }
-    console.log(correctGuesses);
-    document.getElementById("yourWord").innerHTML = correctGuesses.join("");
+
+    console.log(wordChoices);
+
+    document.getElementById("yourWord").innerHTML = goalWord.join("");
     document.getElementById("guessesLeft").innerHTML = totalGuesses;
 
-
-document.onkeyup = function(event) {
-
-    // These are the letters you've guessed. 
-    var keyPresses;  
-    if (typeof event !== "undefined") {
-        keyPresses = event.keyCode;
-    } else if (event) {
-        keyPresses = event.which;
-    }
-    lettersGuessed.push(String.fromCharCode(keyPresses));
-    document.getElementById("badGuesses").innerHTML = lettersGuessed;
-    console.log(keyPresses);
-
-    // This is how many guesses you have left before you lose.
-    var urGuesses = (totalGuesses-lettersGuessed.length);
-    console.log(urGuesses);
-    document.getElementById("guessesLeft").innerHTML = urGuesses;
-
-    // This replaces the underscore with the key you typed.
-    for (let i = 0; i < correctGuesses.length; i++) {
-        if (correctGuesses[i].keyCode === keyPresses) {
-            var urWord = [];
-            urWord.push(String.fromCharCode(keyPresses));
-            console.log(urWord);           
+    // This runs through your target word's array and recognizes if you have a value at any index within the target array. If so, push that value (aka the index #) into the variable "index".
+    function findIndex(arr, value) {
+        var index = [];
+        for (let i = 0; i < arr.length; i++) {
+            if (arr[i] === value) {
+                index.push(i);
+            }
         }
+        return index;
     }
 
+    document.onkeyup = function (event) {
+
+        // These are the letters you've guessed. 
+        var keyPresses;
+        if (typeof event !== "undefined") {
+            keyPresses = event.keyCode;
+        } else if (event) {
+            keyPresses = event.which;
+        }
+        lettersGuessed.push(String.fromCharCode(keyPresses).toLowerCase());
+        console.log(lettersGuessed);
+
+        // For all keyPresses, subtract one from totalGuesses.
+        // This is how many guesses you have left before you lose.
+        var urGuesses = (totalGuesses - lettersGuessed.length);
+        console.log(urGuesses);
+        document.getElementById("guessesLeft").innerHTML = urGuesses;
+
+        // This is running your index "checking" function, findIndex.
+        var indexValue = findIndex(wordChoices, event.key);
+        console.log(findIndex(wordChoices, event.key));
+
+
+        // If correct, replace underscore(s) in the letter's position.
+        // If incorrect, log into div id badGuesses.
+        if (indexValue.length > 0) {
+            for (let i = 0; i < indexValue.length; i++) {
+                goalWord[indexValue[i]] = event.key;
+                document.getElementById("yourWord").innerHTML = goalWord.join("");
+            }
+            console.log("YUUUUUP");
+        } else {
+            wrongLetters.push(event.key);
+            document.getElementById("badGuesses").innerHTML = wrongLetters.join(", ");
+            console.log("NAH");
+        }
+
+        // You win when all underscores are gone from goalWord.
+
+
+
+        // You lose when totalGuesses = 0.
+
+
+
+    };
 };
 
+resetGame();
+
 // initialize();
-
-
-
-
-
-// When you've typed one key and generated your random "word", the next key will either go to the incorrect key presses or replace any of the underscores.
-
-// All key presses until your win or loss (you only get 20 guesses) will either populate the incorrect key presses or replace the underscores.
-
-// Each key press (minus the first one) is counted towards a turn. You only get 20.
-
-// Only allow letters to be counted as a turn/entered into incorrect key presses.
-
-// When you reach 20 key presses (other than the first one) you lose.
-
-// When you get the word guessed correctly (you've replaced the underscores correctly to uncover the letters "underneath") you win!
-
-// When you win or lose, get a confirm to "Play again?"
