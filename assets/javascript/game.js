@@ -32,20 +32,21 @@ var gameFinished = false;
 
 // This is how many times you've won.
 var wins = 0;
+var validKeyPress = false;
 
 
 // YOUR GAME GOES HERE:
 
 function resetGame() {
+    totalGuesses = 20;
+    wrongLetters = [];
+    document.getElementById("badGuesses").innerHTML = wrongLetters.join(", ");
     remainingGuesses = totalGuesses;
     gameStarted = false;
     updateDisplay();
 }
 
 function updateDisplay() {
-
-    // This stores how many guesses you have made.
-    var remainingGuesses = [];
 
     // This array will store the letters you've guessed this turn.
     var lettersGuessed = [];
@@ -58,13 +59,11 @@ function updateDisplay() {
     for (let i = 0; i < wordChoices.length; i++) {
         goalWord[i] = underscore;
     }
-
     console.log(wordChoices);
 
     document.getElementById("yourWord").innerHTML = goalWord.join("");
     document.getElementById("guessesLeft").innerHTML = totalGuesses;
 
-    // This runs through your target word's array and recognizes if you have a value at any index within the target array. If so, push that value (aka the index #) into the variable "index".
     function findIndex(arr, value) {
         var index = [];
         for (let i = 0; i < arr.length; i++) {
@@ -75,54 +74,56 @@ function updateDisplay() {
         return index;
     }
 
+    // This runs through your target word's array and recognizes if you have a value at any index within the target array. If so, push that value (aka the index #) into the variable "index".
     document.onkeyup = function (event) {
 
         // These are the letters you've guessed. 
         var keyPresses;
-        if (typeof event !== "undefined") {
-            keyPresses = event.keyCode;
-        } else if (event) {
-            keyPresses = event.which;
-        }
-        lettersGuessed.push(String.fromCharCode(keyPresses).toLowerCase());
-        console.log(lettersGuessed);
-
-        // For all keyPresses, subtract one from totalGuesses.
-        // This is how many guesses you have left before you lose.
-        var urGuesses = (totalGuesses - lettersGuessed.length);
-        console.log(urGuesses);
-        document.getElementById("guessesLeft").innerHTML = urGuesses;
-
-        // This is running your index "checking" function, findIndex.
-        var indexValue = findIndex(wordChoices, event.key);
-        console.log(findIndex(wordChoices, event.key));
-
-
-        // If correct, replace underscore(s) in the letter's position.
-        // If incorrect, log into div id badGuesses.
-        if (indexValue.length > 0) {
-            for (let i = 0; i < indexValue.length; i++) {
-                goalWord[indexValue[i]] = event.key;
-                document.getElementById("yourWord").innerHTML = goalWord.join("");
-            }
-            console.log("YUUUUUP");
+        if (event.keyCode >= 65 && event.keyCode <= 90) {
+            validKeyPress = true;
         } else {
-            wrongLetters.push(event.key);
-            document.getElementById("badGuesses").innerHTML = wrongLetters.join(", ");
-            console.log("NAH");
+            validKeyPress = false;
         }
+        console.log(validKeyPress);
 
-        // You win when all underscores are gone from goalWord.
-        console.log(goalWord.includes(underscore));
-        if (goalWord.includes(underscore) === false) {
-            alert("You win! Play again?");
-            resetGame();
-        }
+        if (validKeyPress === true) {
+            keyPresses = String.fromCharCode(event.keyCode).toLowerCase();
 
-        // You lose when totalGuesses = 0.
-        if (urGuesses === 0 && goalWord.includes(underscore) === true) {
-            alert("You lose! Play again?");
-            resetGame();
+            // This is how many guesses you have left before you lose.
+            var urGuesses = (totalGuesses - wrongLetters.length);
+
+            // This is running your index "checking" function, findIndex.
+            var indexValue = findIndex(wordChoices, event.key);
+            console.log(indexValue);
+
+            // If correct, replace underscore(s) in the letter's position.
+            // If incorrect, log into div id badGuesses.
+            if (indexValue.length > 0) {
+                for (let i = 0; i < indexValue.length; i++) {
+                    goalWord[indexValue[i]] = event.key;
+                    document.getElementById("yourWord").innerHTML = goalWord.join("");
+                }
+                console.log("YUUUUUP");
+                checkWin();
+            } else {
+                wrongLetters.push(keyPresses);
+                document.getElementById("badGuesses").innerHTML = wrongLetters.join(", ");
+                urGuesses--;
+                document.getElementById("guessesLeft").innerHTML = urGuesses;
+                console.log("NAH");
+                checkWin();
+            }
+
+            // You win when all underscores are gone from goalWord.
+            function checkWin() {
+                if (goalWord.includes(underscore) === false) {
+                    alert("You win! Play again?");
+                    resetGame();
+                } else if ((urGuesses === 0 && goalWord.includes(underscore) === true)) {
+                    alert("You lose! Play again?");
+                    resetGame();
+                }
+            }
         }
     };
 };

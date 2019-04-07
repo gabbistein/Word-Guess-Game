@@ -20,6 +20,11 @@ h1 {
     font-weight: bold;
 }
 
+h4 {
+    margin-top:1rem;
+    font-size: 14pt;
+}
+
 .instructions {
     font-size: 2rem;
     vertical-align: center;
